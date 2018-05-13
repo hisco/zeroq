@@ -3,7 +3,7 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.use(require('chai-spies'));
 
-const {QueueTask ,ZeroDataQueue, ZeroTasksQueue} = require('../../src/zeroq');
+const {QueueTask ,DataQueue, TasksQueue} = require('../../src/zeroq');
 describe('QueueTask', ()=> {
     let queueTask;
     beforeEach(()=>{
@@ -21,16 +21,16 @@ describe('QueueTask', ()=> {
         })
     });
 });
-describe('ZeroTasksQueue', ()=> {
+describe('TasksQueue', ()=> {
     
     describe('#contructor', ()=> {
         let queue;
         beforeEach(()=>{
-            queue = new ZeroTasksQueue(2 , true);
+            queue = new TasksQueue(2 , true);
         });
         it('Should accept only maxConcurrency as a number' , ()=>{
             function badConstruction(){
-                new ZeroTasksQueue("sdfds" , true);
+                new TasksQueue("sdfds" , true);
             } 
 
             expect(badConstruction).to.throw();
@@ -52,13 +52,13 @@ describe('ZeroTasksQueue', ()=> {
             expect(queue.callTask.name).to.equal('syncCall'); 
         });
         it('Should set callTask function as an async function by default' , ()=>{
-            queue = new ZeroTasksQueue(2);
+            queue = new TasksQueue(2);
 
             expect(queue.callTask).to.be.a('function'); 
             expect(queue.callTask.name).to.not.equal('syncCall'); 
         });
         it('Should set callTask function as an async when second argument is false' , ()=>{
-            queue = new ZeroTasksQueue(2 , false);
+            queue = new TasksQueue(2 , false);
 
             expect(queue.callTask).to.be.a('function'); 
             expect(queue.callTask.name).to.not.equal('syncCall'); 
@@ -69,7 +69,7 @@ describe('ZeroTasksQueue', ()=> {
         let firsTask;
         let queue;
         beforeEach(()=>{
-            queue = new ZeroTasksQueue(2 , true);
+            queue = new TasksQueue(2 , true);
             firsTask = chai.spy(function task(){});
             queue.push(firsTask);
         });
@@ -101,7 +101,7 @@ describe('ZeroTasksQueue', ()=> {
         let thirdTask;
         let queue;
         beforeEach(()=>{
-            queue = new ZeroTasksQueue(2 , true );
+            queue = new TasksQueue(2 , true );
 
             firsTask = chai.spy(function task1(){});
             secondTask = chai.spy(function task2(){});
@@ -152,26 +152,26 @@ describe('ZeroTasksQueue', ()=> {
 });
 
 
-describe('ZeroDataQueue', ()=> {
+describe('DataQueue', ()=> {
     
     describe('#contructor', ()=> {
         let queue;
         beforeEach(()=>{
-            queue = new ZeroDataQueue(2 , function onData(){});
+            queue = new DataQueue(2 , function onData(){});
         })
         it('Should accept only maxConcurrency as a number' , ()=>{
             function badConstruction(){
-                new ZeroDataQueue("sdfds" , true);
+                new DataQueue("sdfds" , true);
             } 
 
             expect(badConstruction).to.throw();
         });
         it('Should accept only onData callback as a function' , ()=>{
             function goodConstruction(){
-                const queue = new ZeroDataQueue(2 , ()=>{});
+                const queue = new DataQueue(2 , ()=>{});
             }
             function badConstruction(){
-                new ZeroDataQueue(2 , true);
+                new DataQueue(2 , true);
             } 
 
             expect(badConstruction).to.throw();
@@ -179,7 +179,7 @@ describe('ZeroDataQueue', ()=> {
         });
         it('Should call onData callback with the user data' , ()=>{
             const onData = chai.spy(function (){});
-            const queue = new ZeroDataQueue(2 , onData);
+            const queue = new DataQueue(2 , onData);
 
             queue.push(1);
             expect(onData).to.have.been.called.with(1);
