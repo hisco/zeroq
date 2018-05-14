@@ -10,10 +10,10 @@
 ZeroQ was built to endure great tasks load, while preserving the order of the tasks.
 It surpassing other implementations by:
 
-    * It's in-memory data structure - Linked list instead of Array (I measured 200X latency with `[].shift` comparing to changing a single pointer of linked list)
-    * Super-high test coverage
-    * Out of the box support for TypeScript.
-    * No dependencies.
+  * It's in-memory data structure is faster - Linked list instead of Array (I measured 200X latency with `[].shift` comparing to changing a single pointer of linked list)
+  * Super-high test coverage
+  * Out of the box support for TypeScript.
+  * No dependencies.
 
 I currently don't provide other important queue features such as priority queue as I found current popular implementation fast enough with the features these provide.
 
@@ -22,20 +22,19 @@ Speed was our greatest concern and not a full featured queue.
 
 ### Using Javascript
 ```js
-    //Require all ZeroQ module
-    const ZeroQ = require('zeroq');
-    //now you can use both `ZeroQ.DataQueue` and `ZeroQ.TasksQueue`
+  //Require all ZeroQ module
+  const ZeroQ = require('zeroq');
+  //Now you can use both `ZeroQ.DataQueue` and `ZeroQ.TasksQueue`
 
-    //Directly load the desired class
-    const {DataQueue ,TasksQueue} = require('zeroq');
+  //Or Directly load the desired class
+  const {DataQueue ,TasksQueue} = require('zeroq');
 
 ```
 
 ### Using TypeScript
 ```ts
-    import {ZeroQ} from 'zeroq';
-    //now you can use both `ZeroQ.DataQueue` and `ZeroQ.TasksQueue`
-
+  import {ZeroQ} from 'zeroq';
+  //Now you can use both `ZeroQ.DataQueue` and `ZeroQ.TasksQueue`
 
 ```
 
@@ -94,18 +93,18 @@ setTimeout(()=>{
 Usually when making requests with Noed.JS the best approch is to request I/O operation to execute in parallel and wait for the last one to return.
 
 ```js
-    const rp = require('request-promise');
-    Promise.all([
-        rp('https://www.example.com/resource/1'),
-        rp('https://www.example.com/resource/2'),
-        rp('https://www.example.com/resource/3')
-    ])
-    .then(function (results) {
-        //All requests have finished
-    })
-    .catch(function (err) {
-        //One of the requests have filed
-    });
+  const rp = require('request-promise');
+  Promise.all([
+      rp('https://www.example.com/resource/1'),
+      rp('https://www.example.com/resource/2'),
+      rp('https://www.example.com/resource/3')
+  ])
+  .then(function (results) {
+      //All requests have finished
+  })
+  .catch(function (err) {
+      //One of the requests have failed
+  });
 ```
 While it is in *most* cases the best approch when the amount of requests required is much higher, requesting from the OS to preform so many requests at once will probably result in random recurring timeouts.
 
@@ -113,40 +112,40 @@ The best approach is to lock a big number of requests.
 As long as the number of requests is lower than the maximum concurrency - *all* requests will execute together.
 Else it will be executed in bulcks.
 ```js
-    const rp = require('request-promise');
-    const requestQueue = new TasksQueue(30);
-    
-    const thousendsOfResources = [];
-    for (let i =0; i<10;i++){
-        thousendsOfResources.push(`https://www.example.com/resource/${i}`);
-    }
+  const rp = require('request-promise');
+  const requestQueue = new TasksQueue(30);
 
-    Promise.all(
-        thousendsOfResources.map((requestOptions) =>{
-            return new Promise(function (reoslve , reject){
-                requestQueue.push(function makeRequestTask(){
-                    return rp(requestOptions)
-                        .then((result)=>{
-                            //This single request has finished excuting successfully
-                            //Do something with this single result
-                            //You must not forget to release the request resource
-                            requestQueue.release(); 
-                            return result
-                        })
-                        .catch((error)=>{
-                            //This single request has failed excuting
-                            //Do something with this error 
-                            //You must not forget to release the request resource
-                            requestQueue.release(); 
-                            return error
-                        })
-                })
-            })
-        }
-    ))
-    .then((results)=>{
-        //All request have finshed successfully
-    })
+  const thousendsOfResources = [];
+  for (let i =0; i<10;i++){
+      thousendsOfResources.push(`https://www.example.com/resource/${i}`);
+  }
+
+  Promise.all(
+      thousendsOfResources.map((requestOptions) =>{
+          return new Promise(function (reoslve , reject){
+              requestQueue.push(function makeRequestTask(){
+                  return rp(requestOptions)
+                      .then((result)=>{
+                          //This single request has finished excuting successfully
+                          //Do something with this single result
+                          //You must not forget to release the request resource
+                          requestQueue.release(); 
+                          return result
+                      })
+                      .catch((error)=>{
+                          //This single request has failed excuting
+                          //Do something with this error 
+                          //You must not forget to release the request resource
+                          requestQueue.release(); 
+                          return error
+                      })
+              })
+          })
+      }
+  ))
+  .then((results)=>{
+      //All request have finshed successfully
+  })
 
 ```
 ### Synchronous writing to an IPC socket
@@ -176,45 +175,45 @@ const client = net.createConnection({ path: '/tmp/app.sock' }, () => {
 
 ### Asynchronous proccesing thousands of files
 ```js
-    const queue = new TasksQueue(1000);
-    const glob = require('glob');
-    const {readFile} = require('fs')
-    
-    const getFileNames = new Promise(()=>{
-        glob('**/*.js', function (er, files) {
-            // files is an array of filenames.
-            if (err)
-                reject(err);
-            else //Assume that you have millions of file names in this array
-                resolve(files);
-        })
-    });
-    function readAndProcessSingleFile(filename){
-        return new Promise((resolve , reject)=>{
-            readFile(fileName , (err , data)=>{
-                if (err)
-                    reject(err);
-                else{
-                    resolve(data);
-                    //doSomething(data);
-                }
-                queue.release();
-            })
-        })
-    }
+  const queue = new TasksQueue(1000);
+  const glob = require('glob');
+  const {readFile} = require('fs')
 
-    getFileNames
-        .then((fileNames)=> 
-            Promise.all(
-                fileNames.map((fileName)=>
-                    new Promise((resolve , reject)=>{
-                        queue.push(()=>{
-                            
-                        });
-                    })
-                )
-            )
-        )
+  const getFileNames = new Promise(()=>{
+      glob('**/*.js', function (er, files) {
+          // files is an array of filenames.
+          if (err)
+              reject(err);
+          else //Assume that you have millions of file names in this array
+              resolve(files);
+      })
+  });
+  function readAndProcessSingleFile(filename){
+      return new Promise((resolve , reject)=>{
+          readFile(fileName , (err , data)=>{
+              if (err)
+                  reject(err);
+              else{
+                  resolve(data);
+                  //doSomething(data);
+              }
+              queue.release();
+          })
+      })
+  }
+
+  getFileNames
+      .then((fileNames)=> 
+          Promise.all(
+              fileNames.map((fileName)=>
+                  new Promise((resolve , reject)=>{
+                      queue.push(()=>{
+
+                      });
+                  })
+              )
+          )
+      )
 ```
 
 ## License
