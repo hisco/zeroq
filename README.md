@@ -59,7 +59,7 @@ queue.push(()=>{
 queue.push(()=>{
     console.log('task 2');
 });
-queue.releae();
+queue.release();
 //=> task 2
 ```
 
