@@ -1,4 +1,4 @@
-# ZeroQ
+# Fast queue - ZeroQ
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -116,7 +116,8 @@ Else it will be executed in bulcks.
   const requestQueue = new TasksQueue(30);
 
   const thousendsOfResources = [];
-  for (let i =0; i<10;i++){
+  //No matter the number in this case only 30 request will be exectured in parllel
+  for (let i =0; i<50 ;i++){
       thousendsOfResources.push(`https://www.example.com/resource/${i}`);
   }
 
@@ -137,7 +138,7 @@ Else it will be executed in bulcks.
                           //Do something with this error 
                           //You must not forget to release the request resource
                           requestQueue.release(); 
-                          return error
+                          throw error;
                       })
               })
           })
