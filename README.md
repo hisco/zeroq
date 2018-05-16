@@ -4,7 +4,8 @@
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 
-  High performace in-memory tasks queue for Node.js
+  High performace in-memory tasks queue for Node.js.
+  Perfect for executing in batches while utilizing resources to the maximum.
 
 ## High perormance
 ZeroQ was built to endure great tasks load, while preserving the order of the tasks.
@@ -110,7 +111,7 @@ While it is in *most* cases the best approch when the amount of requests require
 
 The best approach is to lock a big number of requests.
 As long as the number of requests is lower than the maximum concurrency - *all* requests will execute together.
-Else it will be executed in bulcks.
+Else it will be executed in bulks.
 ```js
   const rp = require('request-promise');
   const requestQueue = new TasksQueue(30);
