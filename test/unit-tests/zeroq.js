@@ -9,7 +9,7 @@ describe('QueueTask', ()=> {
     beforeEach(()=>{
         queueTask = new QueueTask(2 , true);
     });
-    describe('#contructor', ()=> {
+    describe('#constructor', ()=> {
         it('Should assign first argument to the value property' , ()=>{
             expect(queueTask.value).to.equal(2); 
         })
@@ -23,7 +23,7 @@ describe('QueueTask', ()=> {
 });
 describe('TasksQueue', ()=> {
     
-    describe('#contructor', ()=> {
+    describe('#constructor', ()=> {
         let queue;
         beforeEach(()=>{
             queue = new TasksQueue(2 , true);
@@ -154,7 +154,7 @@ describe('TasksQueue', ()=> {
 
 describe('DataQueue', ()=> {
     
-    describe('#contructor', ()=> {
+    describe('#constructor', ()=> {
         let queue;
         beforeEach(()=>{
             queue = new DataQueue(2 , function onData(){});

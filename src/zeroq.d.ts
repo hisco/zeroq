@@ -14,6 +14,6 @@ export declare module ZeroQ{
 	}
 	export class DataQueue<T> extends TasksQueue<T>{
 		constructor(maxConcurrency : number , onData : (data:T)=>void);
-
+		public push(data:T):void
 	}
 }

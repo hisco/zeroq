@@ -56,8 +56,13 @@ class TasksQueue{
             //I know.. DRY... but it's much faster..
             if (this.counter<this.maxConcurrency){
                 var node = this.first;
-                this.first = node.next;
-                this.callTask(node.value);
+                if (node){
+                    this.first = node.next;
+                    this.callTask(node.value);
+                }
+                else{
+                    this.first = this.last = this.next = null;
+                }
             }
         }
     }
