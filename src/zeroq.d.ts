@@ -12,8 +12,13 @@ export declare module ZeroQ{
 		public first?:QueueTask<T>;
 		public last?:QueueTask<T>;
 	}
-	export class DataQueue<T> extends TasksQueue<T>{
+	export class DataQueue<T> extends QueueTask<T>{
+		private counter:number;
+		private maxConcurrency:number;
 		constructor(maxConcurrency : number , onData : (data:T)=>void);
 		public push(data:T):void
+		public release():void;
+		public first?:QueueTask<T>;
+		public last?:QueueTask<T>;
 	}
 }
