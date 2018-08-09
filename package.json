@@ -1,6 +1,6 @@
 {
   "name": "zeroq",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Fast and simple in-memory queue implementation with configurable max concurrecy",
   "main": "src/zeroq.js",
   "types": "src/zeroq.d.ts",

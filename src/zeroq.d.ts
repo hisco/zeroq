@@ -1,4 +1,4 @@
-export declare module ZeroQ{
+declare module ZeroQ{
 	export class QueueTask<T>{
 		public value : T;
 		public next? : QueueTask<T>;
@@ -22,3 +22,4 @@ export declare module ZeroQ{
 		public last?:QueueTask<T>;
 	}
 }
+export = ZeroQ;
