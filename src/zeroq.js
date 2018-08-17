@@ -46,7 +46,7 @@ class TasksQueue{
         }
     }
     _release(){
-        if (this.counter<this.maxConcurrency){
+        if (this.counter<this.maxConcurrency && this.first){
             var node = this.first;
             this.first = node.next;
             this.callTask(node.value);
