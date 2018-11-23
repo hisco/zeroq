@@ -34,7 +34,7 @@ Speed was our greatest concern and not a full featured queue.
 
 ### Using TypeScript
 ```ts
-  import {ZeroQ} from 'zeroq';
+  import {DataQueue , TasksQueue} from 'zeroq';
   //Now you can use both `ZeroQ.DataQueue` and `ZeroQ.TasksQueue`
 
 ```
@@ -155,6 +155,15 @@ While Node.js doesn't preform any task in parallel, the OS do.
 Some of the following messages will be lost because the OS can't write two messages in parallel.
 ```js
 const net = require('net');
+const client = net.createConnection({ path: '/tmp/app.sock' }, () => {
+    for (let i=0;i<10000;i++){
+        client.write(`check out ${i}`)
+    }
+});
+```
+With tasks queue it's super safe and simple to make sure all your messages would arrive
+```js
+const net = require('net');
 const writeQueue = new TasksQueue(1);
 const client = net.createConnection({ path: '/tmp/app.sock' }, () => {
     for (let i=0;i<10000;i++){
@@ -165,16 +174,6 @@ const client = net.createConnection({ path: '/tmp/app.sock' }, () => {
 });
 
 ```
-With tasks queue it's super safe and simple to make sure all your messages would arrive
-```js
-const net = require('net');
-const client = net.createConnection({ path: '/tmp/app.sock' }, () => {
-    for (let i=0;i<10000;i++){
-        client.write(`check out ${i}`)
-    }
-});
-```
-
 ### Asynchronous proccesing thousands of files
 ```js
   const queue = new TasksQueue(1000);
